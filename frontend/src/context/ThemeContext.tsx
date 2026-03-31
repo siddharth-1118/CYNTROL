@@ -1,6 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { migrateTheme, parseTheme } from "@/utils/theme/themeUtils";
+import React, { createContext, useContext, useMemo } from "react";
 
 interface ThemeContextType {
   theme: string;

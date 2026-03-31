@@ -91,13 +91,6 @@ const MarksPage = ({ data }: { data: AcademiaData }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const overallPercentage = useMemo(() => {
-    const validMarks = sortedMarks.filter(m => !m.isNA);
-    if (validMarks.length === 0) return 0;
-    const totalPct = validMarks.reduce((sum, m) => sum + m.percentage, 0);
-    return Math.round(totalPct / validMarks.length);
-  }, [sortedMarks]);
-
   const activeSubject: any = useMemo(() => 
     sortedMarks.find((s: any) => s.id === selectedId) || sortedMarks[0] || {},
     [sortedMarks, selectedId]
@@ -105,7 +98,7 @@ const MarksPage = ({ data }: { data: AcademiaData }) => {
 
   const currentRoast = useMemo(() => {
     return getRandomRoast(activeSubject.status);
-  }, [activeSubject.id, activeSubject.status]);
+  }, [activeSubject.status]);
 
   const grades = useMemo(() => [
     { label: "O", min: 91 },
@@ -271,7 +264,7 @@ const MarksPage = ({ data }: { data: AcademiaData }) => {
 
       <div ref={listContainerRef} onScroll={handleScroll} className={`absolute bottom-0 w-full overflow-y-auto bg-[#f5f6fc] text-white no-scrollbar pb-32 h-[55%] rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-20 transition-transform duration-700 ease-in-out snap-y snap-mandatory ${introMode ? "translate-y-[60%]" : "translate-y-0"}`} style={{ WebkitOverflowScrolling: "touch" }}>
         <div className="px-6 flex flex-col gap-4 pt-4">
-          <span className="font-mono text-[10px] lowercase tracking-widest text-[#050505]/40 mb-2 block sticky top-0 bg-[#f5f6fc] z-20 py-2">/// full records</span>
+          <span className="font-mono text-[10px] lowercase tracking-widest text-[#050505]/40 mb-2 block sticky top-0 bg-[#f5f6fc] z-20 py-2">{"/// full records"}</span>
           {sortedMarks.map((subject: any, index: number) => {
             const isSelected = subject.id === selectedId;
             const statusColor = subject.status === "cooked" ? "text-theme-primary" : subject.status === "danger" ? "text-[#ffb800]" : "text-[#050505]";

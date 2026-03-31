@@ -216,7 +216,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("offline", handleOffline);
       window.removeEventListener("beforeinstallprompt", installPromptHandler);
     };
-  }, []);
+  }, [refreshData]);
 
   useEffect(() => {
     if (!latestDiff) return;

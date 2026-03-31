@@ -1,6 +1,5 @@
 "use client";
 import { createContext, useContext } from "react";
-import { AcademiaData } from "@/types";
 
 interface AppLayoutContextType {
   onOpenSettings: () => void;

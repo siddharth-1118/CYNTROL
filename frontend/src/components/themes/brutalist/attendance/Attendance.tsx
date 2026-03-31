@@ -258,8 +258,6 @@ const MobileAttendance = ({
     }, 50);
   };
 
-  const stopProp = (e: any) => e.stopPropagation();
-
   const daysInMonth = new Date(currentCalDate.getFullYear(), currentCalDate.getMonth() + 1, 0).getDate();
   const startOffset = (new Date(currentCalDate.getFullYear(), currentCalDate.getMonth(), 1).getDay() + 6) % 7;
   const monthName = currentCalDate.toLocaleString("default", { month: "long" }).toLowerCase();
@@ -398,7 +396,7 @@ const MobileAttendance = ({
       >
         <div className="px-6 flex flex-col gap-4 pt-4">
           <span className="font-mono text-[10px] lowercase tracking-widest text-[#050505]/40 mb-2 block sticky top-0 bg-[#f5f6fc] z-20 py-2">
-            /// {isPredicting ? "predicted margin" : "watchlist"}
+            {`/// ${isPredicting ? "predicted margin" : "watchlist"}`}
           </span>
 
           {processedList.map((subject, index) => {
