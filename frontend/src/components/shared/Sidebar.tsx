@@ -21,7 +21,8 @@ import {
   Sparkles, 
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import GlowEffect from "./GlowEffect";
@@ -47,7 +48,7 @@ const navItems = [
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { userData } = useAppLayout();
+  const { userData, logout } = useAppLayout();
   const userName = userData?.name || "Student User";
   const initials = userName === "Student User" ? "RA" : userName.split(" ").map((n:any) => n[0]).join("").substring(0, 2).toUpperCase();
 
@@ -118,14 +119,35 @@ export default function Sidebar() {
            <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm uppercase tracking-tighter">
              {initials}
            </div>
-           {!isCollapsed && (
-             <div className="flex flex-col">
-               <span className="text-white text-sm font-bold truncate max-w-[140px] uppercase tracking-tighter italic">{userName}</span>
-               <span className="text-white/40 text-[10px] tracking-widest font-black uppercase">Active Node</span>
-             </div>
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <span className="text-white text-sm font-bold truncate max-w-[140px] uppercase tracking-tighter italic">{userName}</span>
+                <span className="text-white/40 text-[10px] tracking-widest font-black uppercase">Active Node</span>
+              </div>
+            )}
+         </div>
+
+         {/* Logout Button */}
+         <button 
+           onClick={() => {
+             if (confirm("Are you sure you want to logout?")) {
+               logout();
+             }
+           }}
+           className={cn(
+             "mt-4 w-full flex items-center gap-3 px-4 py-2 rounded-xl text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 group relative overflow-hidden",
+             isCollapsed && "justify-center px-0"
            )}
+         >
+           <LogOut size={18} className={cn("shrink-0", !isCollapsed && "group-hover:-translate-x-1 transition-transform")} />
+           {!isCollapsed && (
+             <span className="font-bold text-[12px] tracking-widest uppercase italic">Terminate</span>
+           )}
+           
+           {/* Glitch Overlay for Logout */}
+           <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+         </button>
         </div>
-      </div>
     </motion.div>
   );
 }

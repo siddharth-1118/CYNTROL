@@ -12,6 +12,8 @@ export function proxy(request: NextRequest) {
   const isStatic = 
     pathname.startsWith("/api") || 
     pathname.startsWith("/_next") || 
+    pathname === "/sw.js" ||
+    pathname.includes("workbox-") ||
     pathname.includes("favicon.ico") ||
     pathname.includes("manifest.json") ||
     pathname.includes("icons/") ||

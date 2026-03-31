@@ -15,6 +15,7 @@ from services.profile_service import ProfileService
 from services.course_service import CourseService
 from services.attendance_service import AttendanceService
 from services.timetable_service import TimetableService
+from services.ai_service import AIService
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,6 +25,15 @@ app = FastAPI()
 
 INTERNAL_SECRET = os.getenv("INTERNAL_SECRET")
 
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "name": "CYNTROL-Backend",
+        "version": "2.0.0",
+        "timestamp": datetime.now().isoformat()
+    }
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -31,6 +41,7 @@ app.add_middleware(
         "https://getratiod.lol",
         "https://www.getratiod.lol",
         "http://localhost:3000",
+        "http://localhost:3001",
         "http://localhost:9002",
     ],
     allow_methods=["GET", "POST", "OPTIONS"],
@@ -158,3 +169,15 @@ async def login(creds: Credentials):
         except Exception:
             pass
         raise HTTPException(status_code=401, detail=err_msg)
+
+@app.post("/ai/chat")
+async def ai_chat(request: Request):
+    try:
+        body = await request.json()
+        messages = body.get("messages", [])
+        response = await AIService.get_chat_response(messages)
+        if "error" in response:
+            raise HTTPException(status_code=500, detail=response["error"])
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

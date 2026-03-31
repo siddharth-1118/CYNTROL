@@ -6,34 +6,14 @@ import { WifiOff, ServerCrash } from "lucide-react";
 import MinecraftParticles from "./MinecraftParticles";
 import MinecraftAmbience from "./MinecraftAmbience";
 import SyncStatusNotification from "./SyncStatusNotification";
+import AIChat from "./AIChat";
 
-let globalSplashPlayed = false;
+
 
 export default function AppWrapper({ children }: { children: React.ReactNode }) {
   const { isOffline, isBackendError, setIsBackendError, showWelcome, setShowWelcome, userData } = useApp();
-  const [showSplash, setShowSplash] = useState(false);
-  const [isFirstSplash, setIsFirstSplash] = useState(false);
-useEffect(() => {
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as any).standalone;
 
-  if (isStandalone && !globalSplashPlayed) {
-    globalSplashPlayed = true;
 
-    if (!showWelcome) {
-      const isOnboarded = localStorage.getItem("ratiod_onboarded") === "true";
-      if (!isOnboarded) {
-        setIsFirstSplash(true);
-      }
-      setShowSplash(true);
-      const safetyTimer = setTimeout(() => {
-        setShowSplash(false);
-      }, !isOnboarded ? 3500 : 800);
-      return () => clearTimeout(safetyTimer);
-    }
-  }
-}, [showWelcome]);
 
 useEffect(() => {
   if (isBackendError) {
@@ -44,15 +24,7 @@ useEffect(() => {
   }
 }, [isBackendError, setIsBackendError]);
 
-useEffect(() => {
-  if (showWelcome) {
-    setShowSplash(false);
-    const timer = setTimeout(() => {
-      setShowWelcome(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }
-}, [showWelcome, setShowWelcome]);
+
 
   return (
     <main className="bg-theme-bg fixed inset-0 w-full overflow-hidden flex flex-col">
@@ -107,70 +79,9 @@ useEffect(() => {
       <MinecraftParticles />
       <MinecraftAmbience />
       <SyncStatusNotification />
+      <AIChat />
 
-      <AnimatePresence>
-        {showWelcome && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 z-[10000] bg-theme-bg flex flex-col justify-center items-center px-8 pointer-events-auto"
-          >
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex flex-col items-center text-center"
-            >
-              <span className="text-theme-muted text-sm font-bold uppercase tracking-[0.3em] mb-2">
-                Welcome
-              </span>
-              <h2 
-                className="text-4xl md:text-6xl font-black text-theme-text lowercase tracking-tighter leading-none"
-                style={{ fontFamily: 'var(--font-montserrat)' }}
-              >
-                {userData?.profile?.name || "Student"}
-              </h2>
-            </motion.div>
-          </motion.div>
-        )}
 
-        {showSplash && (
-          <motion.div
-            key="splash"
-            initial={{ opacity: 1 }}
-            exit={{ y: "-100%" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 flex items-center justify-center z-[9999] bg-[#0c30ff]"
-          >
-            {isFirstSplash ? (
-              <video
-                autoPlay
-                muted
-                playsInline
-                onEnded={() => setShowSplash(false)}
-                className="w-full h-full object-cover object-center translate-x-4 scale-105"
-              >
-                <source src="/splash.mp4" type="video/mp4" />
-              </video>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="w-full h-full flex flex-col justify-end p-8 md:p-16"
-              >
-                <h1
-                  className="text-6xl md:text-8xl lowercase tracking-tighter text-theme-primary"
-                  style={{ fontFamily: "Urbanosta, sans-serif" }}
-                >
-                  ratio'd
-                </h1>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

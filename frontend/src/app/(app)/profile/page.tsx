@@ -102,17 +102,17 @@ export default function ProfilePage() {
 
         {/* 2. Info Grid (12-Column Mosaic) */}
         <section className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-           {/* Biometric Overview (Col-Span 8) */}
+           {/* Biometric Overview (Col-Span 12) */}
            <motion.div 
              variants={item}
-             className="xl:col-span-8 bg-zinc-900/20 rounded-[3rem] p-10 border border-white/5 space-y-10"
+             className="xl:col-span-12 bg-zinc-900/20 rounded-[3rem] p-10 border border-white/5 space-y-10"
            >
               <div className="flex items-center gap-3">
                  <Fingerprint className="text-cyan-400" size={24} />
                  <h3 className="text-xs font-black text-[#8A8F98] uppercase tracking-[0.3em]">BIOMETRIC OVERVIEW</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                  <div className="space-y-1">
                     <p className="text-[10px] font-black text-[#8A8F98] uppercase tracking-widest opacity-40">Encryption Address</p>
                     <p className="text-lg font-bold text-white truncate max-w-full">{email}</p>
@@ -132,40 +132,6 @@ export default function ProfilePage() {
                        <p className="text-lg font-black text-white italic uppercase tracking-tighter">ACTIVE_NODE</p>
                     </div>
                  </div>
-              </div>
-           </motion.div>
-
-           {/* Roommate Matrix (Col-Span 4) */}
-           <motion.div 
-             variants={item}
-             className="xl:col-span-4 bg-zinc-950 rounded-[3rem] p-10 border border-white/5 flex flex-col space-y-10"
-           >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                   <Users className="text-indigo-400" size={20} />
-                   <h3 className="text-xs font-black text-[#8A8F98] uppercase tracking-[0.2em]">PEER MATRIX</h3>
-                </div>
-                <div className="relative">
-                   <div className="w-2 h-2 rounded-full bg-indigo-500 animate-ping absolute inset-0" />
-                   <div className="w-2 h-2 rounded-full bg-indigo-500 relative" />
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto no-scrollbar space-y-6">
-                {roommates.map((rm, idx) => (
-                  <div key={idx} className="flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-[10px] font-black text-white group-hover:bg-indigo-500/20 group-hover:border-indigo-500/20 transition-all">
-                          {rm.initials}
-                       </div>
-                       <div>
-                          <p className="text-sm font-bold text-white">{rm.name}</p>
-                          <p className="text-[10px] font-bold text-[#8A8F98] uppercase tracking-widest opacity-50">{rm.room}</p>
-                       </div>
-                    </div>
-                    <Activity size={14} className="text-white/10 group-hover:text-indigo-400 transition-colors" />
-                  </div>
-                ))}
               </div>
            </motion.div>
         </section>

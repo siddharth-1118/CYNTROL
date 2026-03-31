@@ -26,24 +26,30 @@ export default function LoadingPage() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[10000] bg-[#0c30ff] flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-md space-y-4">
-        <div className="space-y-2">
+    <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] flex flex-col items-center justify-center p-8">
+      {/* Liquid Glow Background Element */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        <div className="space-y-4">
           <div className="flex justify-between items-end">
-            <h1
-              className="text-4xl md:text-6xl lowercase tracking-tighter text-theme-primary"
-              style={{ fontFamily: "Urbanosta, sans-serif" }}
-            >
-              ratio'd
-            </h1>
-            <span className="font-mono text-[10px] text-theme-primary/60 mb-1 uppercase tracking-widest">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-primary/60 mb-1">System Initializing</span>
+              <h1
+                className="text-5xl md:text-7xl lowercase tracking-tighter text-white"
+                style={{ fontFamily: 'var(--font-epilogue)' }}
+              >
+                CYNTROL
+              </h1>
+            </div>
+            <span className="font-mono text-xl text-primary font-black mb-1 italic">
               {Math.round(progress)}%
             </span>
           </div>
           
-          <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+          <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-[#1c1c1d]"
+              className="h-full bg-primary shadow-[0_0_15px_rgba(34,211,238,0.5)]"
               initial={{ width: "0%" }}
               animate={{ width: `${progress}%` }}
               transition={{ ease: "easeInOut" }}
@@ -51,17 +57,17 @@ export default function LoadingPage() {
           </div>
         </div>
 
-        <div className="min-h-[3em]">
+        <div className="min-h-[1.5em] flex items-center gap-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
           <AnimatePresence mode="wait">
             <motion.p
               key={flavorIndex}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="text-sm lowercase text-white opacity-40"
-              style={{ fontFamily: "Aonic, sans-serif" }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              className="text-[11px] uppercase tracking-[0.2em] font-mono text-white/40"
             >
-              {flavorText.loading[flavorIndex]}
+              Link established: {flavorText.loading[flavorIndex]}
             </motion.p>
           </AnimatePresence>
         </div>

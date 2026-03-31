@@ -5,7 +5,7 @@ import { ArrowRight, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { EncryptionUtils } from "@/utils/shared/Encryption";
 import { useApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
-import LoadingPage from "./LoadingPage";
+
 
 interface LoginPageProps {
   onLogin: (data: any) => void;
@@ -116,147 +116,123 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <>
-      <AnimatePresence>
-        {loading && <LoadingPage />}
-      </AnimatePresence>
-
-      <motion.div 
-        initial="hidden"
-        animate={isExiting ? "exit" : "visible"}
-        exit="exit"
-        variants={containerVariants}
-        className="h-screen w-full flex flex-col justify-between p-8 md:p-16 relative bg-[#0A0A0A]"
+    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-[#0A0A0A]">
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -20, opacity: 0 }}
+        className="w-full max-w-md bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 space-y-10"
       >
-        {/* Liquid Glow Accent */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] pointer-events-none rounded-full -translate-y-1/2 translate-x-1/3 z-0" />
-        <motion.header variants={itemVariants} className="relative z-10">
-          <h1
-            className="text-5xl md:text-8xl lowercase leading-none tracking-tighter"
-            style={{ fontFamily: "var(--font-epilogue)", color: "#22d3ee" }}
+        <div className="space-y-2 text-center">
+          <h2 
+            className="text-3xl font-bold tracking-tight text-white"
+            style={{ fontFamily: 'var(--font-jakarta)' }}
           >
-            CYNTROL
-          </h1>
-        </motion.header>
+            Welcome Back
+          </h2>
+          <p className="text-white/40 text-sm">Please enter your credentials to access your node.</p>
+        </div>
 
-        <motion.main variants={itemVariants} className="relative z-10 w-full max-w-2xl mt-auto pb-12">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-            <div className="group relative">
-              <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60">
-                Identification (NetID)
-              </label>
-              <div className="relative flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
-                  placeholder="username"
-                  style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
-                />
-                {!username.includes("@") && username.length > 0 && (
-                  <span
-                    className="text-2xl md:text-4xl text-white/30 lowercase pointer-events-none pr-2 select-none"
-                    style={{ fontFamily: "var(--font-jakarta)" }}
-                  >
-                    @srmist.edu.in
-                  </span>
-                )}
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">
+              NetID / Email
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+              placeholder="username@srmist.edu.in"
+              style={{ fontFamily: 'var(--font-jakarta)' }}
+            />
+          </div>
 
-            <div className="group relative">
-              <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60">
-                Passkey
-              </label>
-              <div className="relative flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
-                  placeholder="••••••••"
-                  style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-white/40 hover:text-theme-primary pr-2"
-                >
-                  {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
-                </button>
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {captchaImage && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="group relative"
-                >
-                  <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60 mb-2 block">
-                    Security Check
-                  </label>
-                  <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-                    <div className="relative flex-1 flex items-center border-b-2 border-white focus-within:border-[#22d3ee] transition-colors">
-                      <input
-                        type="text"
-                        value={captchaInput}
-                        onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
-                        className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
-                        placeholder="captcha"
-                        style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
-                      />
-                    </div>
-                    <div className="bg-white rounded p-1 h-[70px] flex-shrink-0 flex items-center justify-center overflow-hidden">
-                      <img src={captchaImage} alt="CAPTCHA" className="h-full object-contain mix-blend-multiply" />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="text-red-400 font-mono text-xs uppercase flex items-center gap-2"
-                >
-                  <AlertCircle size={14} /> {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-between border-t border-white pt-6 group disabled:opacity-30"
-            >
-              <span
-                className="text-4xl md:text-6xl lowercase text-white group-hover:text-theme-primary"
-                style={{ fontFamily: "aonic" }}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">
+              Password
+            </label>
+            <div className="relative flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                placeholder="••••••••"
+                style={{ fontFamily: 'var(--font-jakarta)' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-white/20 hover:text-white transition-colors"
               >
-                {loading ? "WAIT_" : "signin"}
-              </span>
-              {loading ? (
-                <Loader2 className="animate-spin text-white" size={40} />
-              ) : (
-                <ArrowRight
-                  size={48}
-                  className="text-white group-hover:text-theme-primary group-hover:translate-x-4 transition-all"
-                />
-              )}
-            </button>
-          </form>
-        </motion.main>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {captchaImage && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-2"
+              >
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">
+                  CAPTCHA
+                </label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="text"
+                    value={captchaInput}
+                    onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                    placeholder="Enter code"
+                    style={{ fontFamily: 'var(--font-jakarta)' }}
+                  />
+                  <div className="bg-white rounded-xl p-1 h-[56px] w-[120px] flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/10">
+                    <img src={captchaImage} alt="CAPTCHA" className="h-full object-contain mix-blend-multiply" />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs font-medium flex items-center gap-3"
+              >
+                <AlertCircle size={16} /> {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-primary text-black font-bold h-[64px] rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-[0_10px_20px_rgba(34,211,238,0.2)]"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>Authenticating...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In</span>
+                <ArrowRight size={20} />
+              </>
+            )}
+          </button>
+        </form>
       </motion.div>
-    </>
+    </div>
   );
 };
 
 export default LoginPage;
-
