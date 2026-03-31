@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-epilogue: 'Epilogue', sans-serif;
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --transition-default: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --theme-bg: #0f172a;
+  --theme-surface: #0f172a;
+  --theme-primary: #22d3ee;
+  --theme-secondary: #6366f1;
+  --theme-text: #f8fafc;
+}
+
+html, body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-jakarta);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  opacity: 0.03;
+}
+
+.no-line-shadow {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.tectonic-plate {
+  background: var(--theme-surface);
+  border-radius: 1.5rem;
+  transition: transform var(--transition-default), box-shadow var(--transition-default);
+}
+
+.tectonic-plate:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(34, 211, 238, 0.15);
+}
+
+@layer utilities {
+  .bg-obsidian { background-color: #0f172a; }
+  .text-nordic-cyan { color: #22d3ee; }
+  .bg-nordic-cyan { background-color: #22d3ee; }
+  
+  .glass-cyan {
+    background: rgba(34, 211, 238, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+.fading-backdrop {
+  background: radial-gradient(circle at center, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+}
+
+@keyframes lightning {
+  0%, 90%, 100% { opacity: 1; }
+  92%, 96%      { opacity: 0.2; }
+  94%, 98%      { opacity: 0.9; }
+}
+@keyframes sunrise {
+  0%   { transform: translateY(6px); opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.75; }
+}
+@keyframes ominous {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.animate-lightning { animation: lightning 4s ease-in-out infinite; }
+.animate-sunrise   { animation: sunrise  1.2s ease-out forwards; }
+.animate-flicker   { animation: flicker  3s ease-in-out infinite; }
+.animate-ominous   { animation: ominous  5s ease-in-out infinite; }
+

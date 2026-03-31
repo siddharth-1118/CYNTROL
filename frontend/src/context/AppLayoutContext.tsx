@@ -1,0 +1,21 @@
+"use client";
+import { createContext, useContext } from "react";
+import { AcademiaData } from "@/types";
+
+interface AppLayoutContextType {
+  onOpenSettings: () => void;
+  isSwipeDisabled: boolean;
+  setIsSwipeDisabled: (disabled: boolean) => void;
+  userData: any; 
+  academia: any;
+  logout: () => void;
+}
+
+export const AppLayoutContext = createContext<AppLayoutContextType | undefined>(undefined);
+
+export function useAppLayout() {
+  const context = useContext(AppLayoutContext);
+  if (!context) throw new Error("useAppLayout must be used within AppLayout");
+  return context;
+}
+

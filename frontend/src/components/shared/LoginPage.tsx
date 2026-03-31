@@ -1,0 +1,269 @@
+"use client";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { EncryptionUtils } from "@/utils/shared/Encryption";
+import { useApp } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
+import LoadingPage from "./LoadingPage";
+
+interface LoginPageProps {
+  onLogin: (data: any) => void;
+}
+
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+  const { performLogin } = useApp();
+  const router = useRouter();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [captchaInput, setCaptchaInput] = useState<string>("");
+  const [captchaImage, setCaptchaImage] = useState<string | null>(null);
+  const [cdigest, setCdigest] = useState<string | null>(null);
+
+  const [isExiting, setIsExiting] = useState(false);
+
+  const formatUsername = (val: string) => {
+    const cleanVal = val.trim();
+    return cleanVal.includes("@") ? cleanVal : `${cleanVal}@srmist.edu.in`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username || !password) return;
+
+    setError("");
+    const fullUsername = formatUsername(username);
+    const isOnboarded = localStorage.getItem("ratiod_onboarded") === "true";
+
+    try {
+      EncryptionUtils.cleanOldKeys();
+      const savedCookies = EncryptionUtils.loadDecrypted("academia_cookies");
+      const creds = {
+        username: fullUsername,
+        password: password,
+        cookies: savedCookies,
+        captcha: captchaInput || undefined,
+        cdigest: cdigest || undefined,
+      };
+
+      if (!isOnboarded) {
+        setIsExiting(true);
+        performLogin(creds).catch(() => {});
+        setTimeout(() => {
+          router.push("/onboarding");
+        }, 300);
+      } else {
+        setLoading(true);
+        try {
+          const data = await performLogin(creds);
+          onLogin(data);
+        } catch (err: any) {
+          if (err?.type === "CAPTCHA_REQUIRED") {
+            setCaptchaImage(err.image);
+            setCdigest(err.cdigest);
+            setError(err.message || "Please enter the CAPTCHA.");
+            setCaptchaInput("");
+          } else {
+            setCaptchaImage(null);
+            setCdigest(null);
+            setError(err.message || "auth failed");
+          }
+          setLoading(false);
+        }
+      }
+    } catch (err: any) {
+      if (err?.type === "CAPTCHA_REQUIRED") {
+        setCaptchaImage(err.image);
+        setCdigest(err.cdigest);
+        setError(err.message || "Please enter the CAPTCHA.");
+        setCaptchaInput("");
+      } else {
+        setCaptchaImage(null);
+        setCdigest(null);
+        setError(err.message || "auth failed");
+      }
+      setLoading(false);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    },
+    exit: {
+      x: "-100%",
+      opacity: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.22, 1, 0.36, 1] as any
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1] as any
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  return (
+    <>
+      <AnimatePresence>
+        {loading && <LoadingPage />}
+      </AnimatePresence>
+
+      <motion.div 
+        initial="hidden"
+        animate={isExiting ? "exit" : "visible"}
+        exit="exit"
+        variants={containerVariants}
+        className="h-screen w-full flex flex-col justify-between p-8 md:p-16 relative bg-[#0c30ff]"
+      >
+        <motion.header variants={itemVariants} className="relative z-10">
+          <h1
+            className="text-5xl md:text-8xl lowercase leading-none tracking-tighter"
+            style={{ fontFamily: "var(--font-epilogue)", color: "#ceff1c" }}
+          >
+            CYNTROL
+          </h1>
+        </motion.header>
+
+        <motion.main variants={itemVariants} className="relative z-10 w-full max-w-2xl mt-auto pb-12">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+            <div className="group relative">
+              <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60">
+                Identification (NetID)
+              </label>
+              <div className="relative flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
+                  placeholder="username"
+                  style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
+                />
+                {!username.includes("@") && username.length > 0 && (
+                  <span
+                    className="text-2xl md:text-4xl text-white/30 lowercase pointer-events-none pr-2 select-none"
+                    style={{ fontFamily: "var(--font-jakarta)" }}
+                  >
+                    @srmist.edu.in
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="group relative">
+              <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60">
+                Passkey
+              </label>
+              <div className="relative flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
+                  placeholder="••••••••"
+                  style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-white/40 hover:text-theme-primary pr-2"
+                >
+                  {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                </button>
+              </div>
+            </div>
+
+            <AnimatePresence>
+              {captchaImage && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="group relative"
+                >
+                  <label className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60 mb-2 block">
+                    Security Check
+                  </label>
+                  <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+                    <div className="relative flex-1 flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
+                      <input
+                        type="text"
+                        value={captchaInput}
+                        onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
+                        className="w-full bg-transparent py-4 text-4xl md:text-6xl text-white outline-none placeholder:text-white/10"
+                        placeholder="captcha"
+                        style={{ fontFamily: "var(--font-jakarta)", color: 'white' }}
+                      />
+                    </div>
+                    <div className="bg-white rounded p-1 h-[70px] flex-shrink-0 flex items-center justify-center overflow-hidden">
+                      <img src={captchaImage} alt="CAPTCHA" className="h-full object-contain mix-blend-multiply" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-red-400 font-mono text-xs uppercase flex items-center gap-2"
+                >
+                  <AlertCircle size={14} /> {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-between border-t border-white pt-6 group disabled:opacity-30"
+            >
+              <span
+                className="text-4xl md:text-6xl lowercase text-white group-hover:text-theme-primary"
+                style={{ fontFamily: "aonic" }}
+              >
+                {loading ? "WAIT_" : "signin"}
+              </span>
+              {loading ? (
+                <Loader2 className="animate-spin text-white" size={40} />
+              ) : (
+                <ArrowRight
+                  size={48}
+                  className="text-white group-hover:text-theme-primary group-hover:translate-x-4 transition-all"
+                />
+              )}
+            </button>
+          </form>
+        </motion.main>
+      </motion.div>
+    </>
+  );
+};
+
+export default LoginPage;
+

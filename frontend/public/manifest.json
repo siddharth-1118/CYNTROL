@@ -1,0 +1,53 @@
+{
+  "name": "CYNTROL",
+  "short_name": "CYNTROL",
+  "description": "High-fidelity student dashboard with Kinetic Thermography",
+  "id": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "orientation": "portrait",
+  "background_color": "#09090b",
+  "theme_color": "#22d3ee",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Attendance",
+      "url": "/attendance",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Marks",
+      "url": "/marks",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+
