@@ -17,7 +17,7 @@ export default function LoginRoute() {
   };
 
   return (
-    <div data-theme="gojo" className="w-full h-full bg-[#0c30ff]">
+    <div className="w-full h-full bg-[#0A0A0A]">
       <LoginPage onLogin={handleLoginSuccess} />
     </div>
   );

@@ -27,6 +27,7 @@ INTERNAL_SECRET = os.getenv("INTERNAL_SECRET")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://cyntrol.vercel.app",
         "https://getratiod.lol",
         "https://www.getratiod.lol",
         "http://localhost:3000",

@@ -36,7 +36,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
     setError("");
     const fullUsername = formatUsername(username);
-    const isOnboarded = localStorage.getItem("ratiod_onboarded") === "true";
 
     try {
       EncryptionUtils.cleanOldKeys();
@@ -49,30 +48,22 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         cdigest: cdigest || undefined,
       };
 
-      if (!isOnboarded) {
-        setIsExiting(true);
-        performLogin(creds).catch(() => {});
-        setTimeout(() => {
-          router.push("/onboarding");
-        }, 300);
-      } else {
-        setLoading(true);
-        try {
-          const data = await performLogin(creds);
-          onLogin(data);
-        } catch (err: any) {
-          if (err?.type === "CAPTCHA_REQUIRED") {
-            setCaptchaImage(err.image);
-            setCdigest(err.cdigest);
-            setError(err.message || "Please enter the CAPTCHA.");
-            setCaptchaInput("");
-          } else {
-            setCaptchaImage(null);
-            setCdigest(null);
-            setError(err.message || "auth failed");
-          }
-          setLoading(false);
+      setLoading(true);
+      try {
+        const data = await performLogin(creds);
+        onLogin(data);
+      } catch (err: any) {
+        if (err?.type === "CAPTCHA_REQUIRED") {
+          setCaptchaImage(err.image);
+          setCdigest(err.cdigest);
+          setError(err.message || "Please enter the CAPTCHA.");
+          setCaptchaInput("");
+        } else {
+          setCaptchaImage(null);
+          setCdigest(null);
+          setError(err.message || "auth failed");
         }
+        setLoading(false);
       }
     } catch (err: any) {
       if (err?.type === "CAPTCHA_REQUIRED") {
@@ -135,12 +126,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         animate={isExiting ? "exit" : "visible"}
         exit="exit"
         variants={containerVariants}
-        className="h-screen w-full flex flex-col justify-between p-8 md:p-16 relative bg-[#0c30ff]"
+        className="h-screen w-full flex flex-col justify-between p-8 md:p-16 relative bg-[#0A0A0A]"
       >
+        {/* Liquid Glow Accent */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] pointer-events-none rounded-full -translate-y-1/2 translate-x-1/3 z-0" />
         <motion.header variants={itemVariants} className="relative z-10">
           <h1
             className="text-5xl md:text-8xl lowercase leading-none tracking-tighter"
-            style={{ fontFamily: "var(--font-epilogue)", color: "#ceff1c" }}
+            style={{ fontFamily: "var(--font-epilogue)", color: "#22d3ee" }}
           >
             CYNTROL
           </h1>
@@ -207,7 +200,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     Security Check
                   </label>
                   <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-                    <div className="relative flex-1 flex items-center border-b-2 border-white focus-within:border-[#ceff1c] transition-colors">
+                    <div className="relative flex-1 flex items-center border-b-2 border-white focus-within:border-[#22d3ee] transition-colors">
                       <input
                         type="text"
                         value={captchaInput}
