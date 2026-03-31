@@ -7,8 +7,6 @@ export function proxy(request: NextRequest) {
 
   const isPublicPage = 
     pathname === "/login" || 
-    pathname === "/onboarding" || 
-    pathname === "/setup" || 
     pathname === "/~offline";
 
   const isStatic = 
@@ -31,7 +29,7 @@ export function proxy(request: NextRequest) {
   if (isStatic) return NextResponse.next();
 
   if (!hasSession && !isPublicPage) {
-    return NextResponse.redirect(new URL("/onboarding", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (hasSession && (pathname === "/login" || pathname === "/setup")) {
