@@ -39,9 +39,16 @@ export const getAcronym = (name: string) => {
 
 export const buildCourseMap = (data: any) => {
   const map: any = {};
+  if (data?.courses) {
+    Object.values(data.courses).forEach((course: any) => {
+      if (course?.code && course?.name && !map[course.code.trim()]) {
+        map[course.code.trim()] = course.name;
+      }
+    });
+  }
   if (data?.attendance) {
     data.attendance.forEach((sub: any) => {
-      if (sub.code && sub.title) {
+      if (sub.code && sub.title && !map[sub.code.trim()]) {
         map[sub.code.trim()] = sub.title;
       }
     });

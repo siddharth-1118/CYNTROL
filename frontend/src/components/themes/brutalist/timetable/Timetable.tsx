@@ -48,14 +48,18 @@ export default function Timetable({ schedule, dayOrder, data }) {
 
   const courseMap = useMemo(() => {
     const map: any = {};
+    if (data?.courses) {
+      Object.values(data.courses).forEach((course: any) => {
+        if (course?.code && course?.name && !map[course.code.trim()]) {
+          map[course.code.trim()] = course.name;
+        }
+      });
+    }
     if (data?.attendance) {
       data.attendance.forEach((sub: any) => {
         if (sub.code && sub.title) {
           const code = sub.code.trim();
-          const isPrac = (sub.category || "").toLowerCase().includes("practical") || 
-                        (sub.slot || "").toUpperCase().startsWith("P");
-          
-          if (!map[code] || isPrac) {
+          if (!map[code]) {
             map[code] = sub.title;
           }
         }
