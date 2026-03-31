@@ -42,7 +42,6 @@ export default [
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/set-state-in-effect": "off",
-      "react-hooks/preserve-manual-memoization": "warn",
       "@next/next/no-img-element": "warn",
     },
   },
